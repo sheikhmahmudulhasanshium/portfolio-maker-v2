@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 // Import your feature modules later (e.g., ProjectsModule)
 // import { ProjectsModule } from './projects/projects.module';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -23,6 +24,8 @@ import { AppService } from './app.service';
       }),
       inject: [ConfigService],
     }),
+
+    ProjectsModule,
 
     // --- Add your feature modules here ---
     // ProjectsModule,
