@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { ProjectsModule } from './projects/projects.module';
 import { ServicesModule } from './services/services.module';
 import { InterestsModule } from './interests/interests.module';
+import { SocialHandlesModule } from './social-handles/social-handles.module';
 
 @Module({
   imports: [
@@ -36,6 +37,8 @@ import { InterestsModule } from './interests/interests.module';
     ServicesModule,
 
     InterestsModule,
+
+    SocialHandlesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
