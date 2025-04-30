@@ -2,10 +2,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ServeStaticModule } from '@nestjs/serve-static'; // Import ServeStaticModule
+import { join } from 'path'; // Import join from path
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// Import your feature modules later (e.g., ProjectsModule)
-// import { ProjectsModule } from './projects/projects.module';
 import { ProjectsModule } from './projects/projects.module';
 
 @Module({
@@ -15,20 +15,21 @@ import { ProjectsModule } from './projects/projects.module';
       envFilePath: '.env',
     }),
 
+    // Configure static file serving from the 'public' directory
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Points to the 'public' folder at the root of your project
+      serveRoot: '/', // Serve files from the root URL (e.g., /favicon.ico)
+    }),
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      // REMOVED 'async' here because configService.get is synchronous
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
-        // Add other Mongoose connection options if needed
       }),
       inject: [ConfigService],
     }),
 
     ProjectsModule,
-
-    // --- Add your feature modules here ---
-    // ProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

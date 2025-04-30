@@ -1,0 +1,22 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "src/main.ts",
+        "use": "@vercel/node",
+        "config": {
+          "shouldAddHelpers": true,
+          "tscOptions": {
+            "emitDecoratorMetadata": true,
+            "experimentalDecorators": true
+          }
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "src/main.ts"
+      }
+    ]
+  }
