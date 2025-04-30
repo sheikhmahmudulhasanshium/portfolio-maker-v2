@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProjectsModule } from './projects/projects.module';
 import { ServicesModule } from './services/services.module';
+import { InterestsModule } from './interests/interests.module';
 
 @Module({
   imports: [
@@ -33,6 +34,8 @@ import { ServicesModule } from './services/services.module';
     ProjectsModule,
 
     ServicesModule,
+
+    InterestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
