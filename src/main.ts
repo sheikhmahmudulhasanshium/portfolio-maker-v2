@@ -45,7 +45,7 @@ async function bootstrap() {
 
   // --- Define Custom Swagger UI Options ---
   const customOptions: SwaggerCustomOptions = {
-    customSiteTitle: 'Portfolio API Docs', // Sets the browser tab title
+    customSiteTitle: 'Portfolio Maker V.2', // Sets the browser tab title
     customfavIcon: '/favicon.ico', // Path to your favicon in the 'public' folder
     // Ensure 'favicon.ico' exists in your project's 'public' directory
     customCss: `
