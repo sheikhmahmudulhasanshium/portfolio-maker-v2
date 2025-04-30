@@ -17,7 +17,7 @@ import { ProjectsModule } from './projects/projects.module';
 
     // Configure static file serving from the 'public' directory
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'), // Points to the 'public' folder at the root of your project
+      rootPath: join(process.cwd(), 'public'),
       serveRoot: '/', // Serve files from the root URL (e.g., /favicon.ico)
     }),
 

@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   DocumentBuilder,
   SwaggerModule,
-  SwaggerCustomOptions, // Import SwaggerCustomOptions
+  SwaggerCustomOptions,
 } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
@@ -13,14 +13,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // --- Enable CORS if needed (often required for frontend interaction) ---
   app.enableCors({
-    // origin: 'http://your-frontend-domain.com', // Be specific in production
-    origin: true, // Allows any origin for development, adjust as needed
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  // --------------------------------------------------------------------
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -32,23 +29,37 @@ async function bootstrap() {
     }),
   );
 
-  // --- Swagger Document Configuration ---
   const config = new DocumentBuilder()
-    .setTitle('👨‍🎨 Portfolio Maker') // Updated title example
+    .setTitle('👨‍🎨 Portfolio Maker')
     .setDescription('API Documentation for the Portfolio Backend')
-    .setVersion('2.0') // Updated version example
-    // Add other options like Bearer Auth if you use authentication
-    // .addBearerAuth()
+    .setVersion('2.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
   // --- Define Custom Swagger UI Options ---
   const customOptions: SwaggerCustomOptions = {
-    customSiteTitle: 'Portfolio Maker V.2', // Sets the browser tab title
-    customfavIcon: '/favicon.ico', // Path to your favicon in the 'public' folder
-    // Ensure 'favicon.ico' exists in your project's 'public' directory
+    customSiteTitle: 'Portfolio Maker V.2',
+    customfavIcon: '/favicon.ico', // Served by ServeStaticModule from 'public' folder
+
+    // --- Load core Swagger UI assets from CDN ---
+    // It's good practice to pin to a specific version for stability
+    customCssUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css',
+    // customCssUrl: 'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css', // Alternative CDN
+    customJs: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.js',
+      // 'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js',       // Alternative CDN
+      // 'https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js', // Alternative CDN
+    ],
+    // ---------------------------------------------
+
+    // Your custom inline CSS overrides (will be applied AFTER the main CSS loads)
     customCss: `
+      /* Ensure the font is available or remove if not needed */
+      @import url('https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap');
+
       /* --------- General Custom Styles --------- */
       .swagger-ui .topbar {
         background-color: #2b3b4a; /* Darker blue top bar */
@@ -56,7 +67,8 @@ async function bootstrap() {
       }
       .swagger-ui .topbar .link img {
          /* Replace default swagger logo with custom icon */
-         content: url('/android-chrome-192x192.png'); /* Ensure this exists in 'public' */
+         /* Make sure 'android-chrome-192x192.png' is in your 'public' folder */
+         content: url('/android-chrome-192x192.png');
          max-height: 40px; /* Adjust size */
          margin: 5px 15px; /* Add some margin */
          width: auto; /* Maintain aspect ratio */
@@ -93,72 +105,48 @@ async function bootstrap() {
         color: #ffffff; /* Text color for operation tags */
         font-weight: bold;
       }
-      .swagger-ui .opblock.opblock-get {
-        border-color: #61affe; /* Color for GET operations */
-        background: rgba(97,175,254,.05); /* Lighter background */
-      }
+      .swagger-ui .opblock.opblock-get { border-color: #61affe; background: rgba(97,175,254,.05); }
       .swagger-ui .opblock.opblock-get .opblock-summary-method { background: #61affe; }
-
-      .swagger-ui .opblock.opblock-post {
-        border-color: #49cc90; /* Color for POST operations */
-        background: rgba(73,204,144,.05); /* Lighter background */
-      }
+      .swagger-ui .opblock.opblock-post { border-color: #49cc90; background: rgba(73,204,144,.05); }
       .swagger-ui .opblock.opblock-post .opblock-summary-method { background: #49cc90; }
-
-      .swagger-ui .opblock.opblock-put {
-        border-color: #fca130; /* Color for PUT operations */
-        background: rgba(252,161,48,.05); /* Lighter background */
-      }
-       .swagger-ui .opblock.opblock-put .opblock-summary-method { background: #fca130; }
-
-      .swagger-ui .opblock.opblock-delete {
-        border-color: #f93e3e; /* Color for DELETE operations */
-        background: rgba(249,62,62,.05); /* Lighter background */
-      }
+      .swagger-ui .opblock.opblock-put { border-color: #fca130; background: rgba(252,161,48,.05); }
+      .swagger-ui .opblock.opblock-put .opblock-summary-method { background: #fca130; }
+      .swagger-ui .opblock.opblock-delete { border-color: #f93e3e; background: rgba(249,62,62,.05); }
       .swagger-ui .opblock.opblock-delete .opblock-summary-method { background: #f93e3e; }
 
       /* --- HIDE THE "POWERED BY SMARTBEAR" LINK --- */
-      .swagger-ui .info > a[href*="smartbear.com"] {
-        display: none !important; /* Target the link specifically */
-      }
-      /* --------------------------------------------- */
-
-      /* --- Load Custom Font --- */
-      /* Ensure the font is available or remove if not needed */
-      @import url('https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap');
-
+      .swagger-ui .info > a[href*="smartbear.com"] { display: none !important; }
     `,
-    // --- Optional: Further Swagger UI behaviour configuration ---
+    // Optional Swagger UI behaviour configuration
     swaggerOptions: {
-      docExpansion: 'list', // 'none', 'list', 'full' - Controls default expansion
-      filter: true, // Enable filtering by tag or operation ID
+      docExpansion: 'list',
+      filter: true,
       showExtensions: true,
       showCommonExtensions: true,
       displayRequestDuration: true,
-      tryItOutEnabled: true, // Enable "Try it out" functionality
-      syntaxHighlight: { activate: true, theme: 'monokai' }, // e.g., monokai,arta
+      tryItOutEnabled: true,
+      syntaxHighlight: { activate: true, theme: 'monokai' },
     },
   };
   // ---------------------------------
 
-  // --- Setup Swagger UI ---
   SwaggerModule.setup(
-    'api', // The path to serve Swagger UI
-    app, // Your NestJS application instance
-    document, // The generated OpenAPI document
-    customOptions, // Your custom UI options
+    'api', // The path to serve Swagger UI HTML page
+    app,
+    document,
+    customOptions, // Use the updated options with CDN links
   );
-  // -------------------------------------------------------
 
-  const port = configService.get<number>('PORT') ?? 3000;
+  const port = configService.get<number>('PORT') ?? 3000; // Vercel ignores this, uses its own port handling
 
+  // For Vercel, app.listen() isn't strictly necessary for the serverless function
+  // but it's good practice for local development and doesn't hurt on Vercel.
   await app.listen(port);
-  console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log(`Swagger UI available at: ${await app.getUrl()}/api`);
+  console.log(`Application is running locally on: http://localhost:${port}`); // Adjusted log for clarity
+  console.log(`Swagger UI available locally at: http://localhost:${port}/api`);
 }
 
-// Handle potential errors during bootstrap
 bootstrap().catch((err) => {
   console.error('Error during application bootstrap:', err);
-  process.exit(1); // Exit with a failure code
+  process.exit(1);
 });
