@@ -10,6 +10,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { ServicesModule } from './services/services.module';
 import { InterestsModule } from './interests/interests.module';
 import { SocialHandlesModule } from './social-handles/social-handles.module';
+import { EducationModule } from './education/education.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { SocialHandlesModule } from './social-handles/social-handles.module';
     InterestsModule,
 
     SocialHandlesModule,
+
+    EducationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
