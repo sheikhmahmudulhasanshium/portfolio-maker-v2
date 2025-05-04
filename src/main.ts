@@ -8,10 +8,12 @@ import {
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { clerkMiddleware } from '@clerk/express'; // <-- Import clerkMiddleware
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  app.use(clerkMiddleware());
 
   app.enableCors({
     origin: true,
