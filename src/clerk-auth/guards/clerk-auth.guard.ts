@@ -19,6 +19,7 @@ export interface AuthenticatedRequest extends Request {
     email?: string; // Expects string or undefined
     firstName?: string; // Expects string or undefined
     lastName?: string; // Expects string or undefined
+    profileImageUrl?: string; // <-- Add this
   };
   auth: AuthObject;
 }
@@ -48,7 +49,9 @@ export class ClerkAuthGuard implements CanActivate {
 
     // Handle orgId potentially being undefined, convert to null if so
     const orgId = auth.orgId ?? null;
-
+    const profileImageUrl = auth.sessionClaims?.profileImageUrl as
+      | string
+      | undefined;
     request.auth = auth;
     request.user = {
       userId: auth.userId,
@@ -57,6 +60,7 @@ export class ClerkAuthGuard implements CanActivate {
       email: email, // Use the casted value
       firstName: firstName, // Use the casted value
       lastName: lastName, // Use the casted value
+      profileImageUrl: profileImageUrl, // <-- Add this line
     };
 
     // --- Corrections End ---

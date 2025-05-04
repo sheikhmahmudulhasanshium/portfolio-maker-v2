@@ -1,25 +1,24 @@
-// src/users/schemas/user.schema.ts
+// src/users/entities/user.entity.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'; // Import Swagger decorators
-import { Document, Schema as MongooseSchema } from 'mongoose'; // Import Schema for ObjectId type hint
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type UserDocument = User & Document;
 
-@Schema({ timestamps: true }) // Add timestamps (createdAt, updatedAt)
+@Schema({ timestamps: true })
 export class User {
-  // Use MongooseSchema.Types.ObjectId for Swagger type hint if needed, but Mongoose handles it
   @ApiProperty({ type: String, description: 'MongoDB Object ID' })
-  _id: MongooseSchema.Types.ObjectId; // Added for Swagger documentation
+  _id: MongooseSchema.Types.ObjectId;
 
   @ApiProperty({
     description: 'Clerk User ID (unique)',
     example: 'user_2abcd...',
   })
-  @Prop({ required: true, unique: true, index: true }) // Add index for faster lookups
+  @Prop({ required: true, unique: true, index: true })
   clerkId: string;
 
   @ApiProperty({ description: 'User Email', example: 'test@example.com' })
-  @Prop({ required: true, index: true }) // Index email too if you query by it often
+  @Prop({ required: true, index: true })
   email: string;
 
   @ApiPropertyOptional({ description: 'User First Name', example: 'John' })
@@ -30,7 +29,15 @@ export class User {
   @Prop()
   lastName?: string;
 
-  // Timestamps added by schema option
+  // --- ADD THIS ---
+  @ApiPropertyOptional({
+    description: 'URL of the user profile image',
+    example: 'https://...',
+  })
+  @Prop() // Make it optional in the DB
+  profileImageUrl?: string;
+  // --- END ADD ---
+
   @ApiPropertyOptional({ description: 'Creation timestamp' })
   createdAt?: Date;
 

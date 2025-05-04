@@ -8,6 +8,7 @@ interface SyncClerkUserData {
   email: string;
   firstName?: string;
   lastName?: string;
+  profileImageUrl?: string; // <-- Add this
 }
 
 @Injectable()
@@ -19,7 +20,8 @@ export class ClerkAuthService {
   async syncUserWithClerkData(
     clerkUserData: SyncClerkUserData,
   ): Promise<UserDocument> {
-    const { userId, email, firstName, lastName } = clerkUserData;
+    const { userId, email, firstName, lastName, profileImageUrl } =
+      clerkUserData;
 
     this.logger.log(
       `Attempting to find or create user for Clerk ID: ${userId}`,
@@ -30,6 +32,7 @@ export class ClerkAuthService {
       email,
       firstName,
       lastName,
+      profileImageUrl,
     });
 
     // --- Apply the fix here on Line 37 ---

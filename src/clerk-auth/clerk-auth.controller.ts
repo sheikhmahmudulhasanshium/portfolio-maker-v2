@@ -61,6 +61,7 @@ export class ClerkAuthController {
       email,
       firstName: tokenFirstName,
       lastName: tokenLastName,
+      profileImageUrl, // <-- Add this line
     } = req.user;
 
     this.logger.log(`Sync request received for Clerk User ID: ${userId}`);
@@ -80,6 +81,7 @@ export class ClerkAuthController {
       email: effectiveEmail,
       firstName: effectiveFirstName,
       lastName: effectiveLastName,
+      profileImageUrl: profileImageUrl, // <-- Add this line
     });
   }
 }
