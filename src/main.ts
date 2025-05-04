@@ -31,8 +31,11 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('👨‍🎨 Portfolio Maker')
+    .addBearerAuth() // <-- Add this
+
     .setDescription('API Documentation for the Portfolio Backend')
     .setVersion('2.0')
+
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -11,6 +11,8 @@ import { ServicesModule } from './services/services.module';
 import { InterestsModule } from './interests/interests.module';
 import { SocialHandlesModule } from './social-handles/social-handles.module';
 import { EducationModule } from './education/education.module';
+import { ClerkAuthModule } from './clerk-auth/clerk-auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -42,6 +44,10 @@ import { EducationModule } from './education/education.module';
     SocialHandlesModule,
 
     EducationModule,
+
+    ClerkAuthModule,
+
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
