@@ -1,5 +1,11 @@
 // src/users/dto/create-user.dto.ts
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator'; // Added IsUrl
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -22,4 +28,13 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   lastName?: string;
+
+  // Add profileImageUrl to DTO as well for consistency, though primarily handled by sync
+  @ApiPropertyOptional({
+    description: 'URL of the user profile image',
+    example: 'https://...',
+  })
+  @IsUrl()
+  @IsOptional()
+  profileImageUrl?: string;
 }

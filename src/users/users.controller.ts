@@ -33,6 +33,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // Note: This endpoint might be redundant if user creation only happens via Clerk sync
+  // Kept guarded as it's a POST operation potentially for admin/internal use
   @Post()
   @ApiOperation({ summary: 'Create a new user (manual)' })
   @ApiResponse({
@@ -41,25 +42,27 @@ export class UsersController {
     type: User,
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBearerAuth() // Assuming admin/internal use requiring auth
-  @UseGuards(ClerkAuthGuard) // Secure this if needed
+  @ApiBearerAuth()
+  @UseGuards(ClerkAuthGuard)
   create(@Body() createUserDto: CreateUserDto) {
     // Consider if manual creation should be allowed or if it conflicts with Clerk sync
     return this.usersService.create(createUserDto);
   }
 
+  // --- REMOVED AUTH GUARD ---
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'List of users.', type: [User] })
-  @ApiBearerAuth() // Secure if needed
-  @UseGuards(ClerkAuthGuard) // Secure this endpoint
+  // Removed @ApiBearerAuth()
+  // Removed @UseGuards(ClerkAuthGuard)
   findAll() {
     return this.usersService.findAll();
   }
 
   // Endpoint to get the currently authenticated user's DB record
+  // --- KEPT AUTH GUARD --- (Requires req.user)
   @Get('me')
-  @UseGuards(ClerkAuthGuard) // Apply guard to get req.user
+  @UseGuards(ClerkAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get the profile of the currently authenticated user',
@@ -75,30 +78,29 @@ export class UsersController {
     description: 'User not found in DB (sync might be needed).',
   })
   async getMe(@Req() req: AuthenticatedRequest) {
-    // Use AuthenticatedRequest type
-    const { userId } = req.user; // Get Clerk userId from the guard
+    const { userId } = req.user;
     const user = await this.usersService.findOneByClerkId(userId);
     if (!user) {
-      // This case might happen if the user exists in Clerk but hasn't been synced yet
       throw new NotFoundException(
         `User with Clerk ID ${userId} not found in the database. Try syncing.`,
       );
     }
-    return user; // Return the user document from your database
+    return user;
   }
 
+  // --- REMOVED AUTH GUARD ---
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific user by database ID' })
   @ApiParam({ name: 'id', description: 'MongoDB User ID' })
   @ApiResponse({ status: 200, description: 'User found.', type: User })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  @ApiBearerAuth() // Secure if needed
-  @UseGuards(ClerkAuthGuard) // Secure this endpoint
+  // Removed @ApiBearerAuth()
+  // Removed @UseGuards(ClerkAuthGuard)
   findOne(@Param('id') id: string) {
-    // ID is typically a string from MongoDB ObjectId
     return this.usersService.findOne(id);
   }
 
+  // Kept guarded as it modifies data
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user by database ID' })
   @ApiParam({ name: 'id', description: 'MongoDB User ID' })
@@ -109,22 +111,21 @@ export class UsersController {
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  @ApiBearerAuth() // Secure if needed
-  @UseGuards(ClerkAuthGuard) // Secure this endpoint
+  @ApiBearerAuth()
+  @UseGuards(ClerkAuthGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    // ID is string
     return this.usersService.update(id, updateUserDto);
   }
 
+  // Kept guarded as it deletes data
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user by database ID' })
   @ApiParam({ name: 'id', description: 'MongoDB User ID' })
   @ApiResponse({ status: 200, description: 'User deleted successfully.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  @ApiBearerAuth() // Secure if needed
-  @UseGuards(ClerkAuthGuard) // Secure this endpoint
+  @ApiBearerAuth()
+  @UseGuards(ClerkAuthGuard)
   remove(@Param('id') id: string) {
-    // ID is string
     return this.usersService.remove(id);
   }
 }

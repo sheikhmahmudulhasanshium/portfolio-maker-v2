@@ -29,14 +29,12 @@ export class User {
   @Prop()
   lastName?: string;
 
-  // --- ADD THIS ---
   @ApiPropertyOptional({
     description: 'URL of the user profile image',
     example: 'https://...',
   })
   @Prop() // Make it optional in the DB
   profileImageUrl?: string;
-  // --- END ADD ---
 
   @ApiPropertyOptional({ description: 'Creation timestamp' })
   createdAt?: Date;
